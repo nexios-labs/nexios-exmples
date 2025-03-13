@@ -1,1 +1,98 @@
-*/venv */
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+*.swn
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.env
+*.env
+*.venv
+pip-log.txt
+pip-delete-this-directory.txt
+poetry.lock
+
+# Django
+*.sqlite3
+media/
+storage/
+*.db
+*.sqlite
+*.sqlite-journal
+
+# Virtual Environments
+venv/
+.env/
+.virtualenv/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains
+.idea/
+*.iml
+out/
+
+# Node.js / Frontend
+node_modules/
+package-lock.json
+yarn.lock
+.pnp.cjs
+.pnp.loader.mjs
+
+# Logs
+logs/
+*.log
+
+# Compiled files
+*.out
+*.class
+*.exe
+*.dll
+*.so
+*.dylib
+*.o
+*.a
+*.lib
+
+# Git
+*.orig
+*.rej
+
+# Docker
+*.dockerignore
+docker-compose.override.yml
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Linux/macOS
+*.bak
+*~
+*.swp
+
+# Coverage reports
+.coverage
+htmlcov/
+*.lcov
+.nyc_output/
+
+# Miscellaneous
+*.sublime-project
+*.sublime-workspace
+*.sqlite-shm
+*.sqlite3-wal
+*.sqlite3-shm
+
