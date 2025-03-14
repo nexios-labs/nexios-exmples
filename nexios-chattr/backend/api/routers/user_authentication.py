@@ -18,7 +18,7 @@ async def login_user(req: Request, res: Response):
     except ValidationError as e:
         error = e.errors()
         print(error)
-        return res.status(422)
+        return res.json(error,status_code=422)
     
     data = dict(validated_data)
     

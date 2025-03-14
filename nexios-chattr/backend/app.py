@@ -5,6 +5,7 @@ from config import test_config,db_config
 from api.routers import api_router
 from tortoise import Tortoise as db
 from common.get_user import get_user
+from ws import WebsocketRouter
 app = get_application(
     config=test_config
 )
@@ -27,6 +28,7 @@ async def close_db():
     await db.close_connections()
     print("Database closed")
 app.mount_router(api_router)
+app.mount_ws_router(WebsocketRouter)
 app.add_middleware(
     middleware=AuthenticationMiddleware(
         backend=JWTAuthBackend(
