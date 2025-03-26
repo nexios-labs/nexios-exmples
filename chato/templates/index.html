@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/YOUR_FA_KIT.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center p-6">
+    <h1 class="text-2xl font-bold mb-4">Group Chat: <span id="room-name" class="text-purple-600">General</span></h1>
+    
+    <div class="w-full max-w-4xl flex flex-col md:flex-row gap-4">
+        <div id="users-list" class="md:w-1/4 bg-white shadow rounded-lg p-4">
+            <h3 class="text-lg font-semibold mb-2">Online Users</h3>
+            <ul id="users" class="space-y-2"></ul>
+        </div>
+        
+        <div class="flex-1 flex flex-col bg-white shadow rounded-lg p-4">
+            <div id="chat" class="h-80 overflow-y-auto border-b border-gray-200 p-2"></div>
+            
+            <div class="flex items-center mt-4 gap-2">
+                <input type="text" id="message-input" placeholder="Type your message..." 
+                    class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400">
+                <button id="send-button" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const roomId = new URLSearchParams(window.location.search).get('room') || 'general';
+        const username = prompt("Enter your username") || `Guest-${Math.random().toString(36).substr(2, 6)}`;
+        
+        document.getElementById('room-name').textContent = roomId;
+        
+        const ws = new WebSocket(
+            `ws://${window.location.host}/ws/chat?room=${encodeURIComponent(roomId)}&username=${encodeURIComponent(username)}`
+        );
+        
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            const chatDiv = document.getElementById('chat');
+            
+            if (data.type === 'welcome') {
+                updateUserList(data.members);
+            } else if (data.type === 'message') {
+                chatDiv.innerHTML += `
+                    <div class="p-2 bg-gray-100 rounded-lg my-2">
+                        <strong>${data.sender}:</strong> ${data.content}
+                        <small class="block text-gray-500 text-xs">${new Date(data.timestamp * 1000).toLocaleTimeString()}</small>
+                    </div>`;
+            } else if (data.type === 'system') {
+                chatDiv.innerHTML += `
+                    <div class="text-center text-gray-500 text-sm my-2">
+                        <em>${data.content}</em>
+                    </div>`;
+            }
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        };
+        
+        document.getElementById('send-button').addEventListener('click', () => {
+            const input = document.getElementById('message-input');
+            if (input.value.trim()) {
+                ws.send(JSON.stringify({ type: 'message', content: input.value }));
+                input.value = '';
+            }
+        });
+        
+        function updateUserList(users) {
+            const usersList = document.getElementById('users');
+            usersList.innerHTML = users.map(user => 
+                `<li class="flex items-center gap-2 text-gray-700">
+                    <i class="fas fa-user-circle text-purple-600 text-xl"></i>
+                    ${user}
+                </li>`
+            ).join('');
+        }
+        
+        ws.onclose = () => {
+            alert('Disconnected from chat');
+        };
+    </script>
+</body>
+</html>

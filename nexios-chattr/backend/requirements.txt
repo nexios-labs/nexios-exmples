@@ -1,6 +1,0 @@
-pydantic
-uvicorn
-tortoise 
-aerich
-websocket
-git+https://github.com/nexios-labs/nexios.git@main
